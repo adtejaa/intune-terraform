@@ -1,0 +1,33 @@
+name: Check Terraform Drift
+
+on:
+  workflow_dispatch:  # Manual trigger from GitHub UI
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+
+    env:
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      ARM_USE_OIDC: true
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan (Check Drift)
+        run: terraform plan -no-color
