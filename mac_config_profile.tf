@@ -54,3 +54,16 @@ resource "microsoft365wp_device_management_configuration_policy" "typed4" {
     },
   ]
 }
+
+
+
+resource "microsoft365wp_device_configuration" "macos_software_update" {
+  display_name = "macOS Updates"
+  macos_software_update = {
+    all_other_update_behavior = "installASAP"
+  }
+
+ assignments = [
+    { target = { group = { group_id = "d798b855-15f8-4d15-8f65-52046f83a6e7" } } },
+  ]
+}
