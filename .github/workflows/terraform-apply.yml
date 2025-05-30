@@ -37,6 +37,7 @@ jobs:
         run: terraform apply -auto-approve
 
     env:
+      TERRAFORM_CLOUD_TOKEN: ${{ secrets.TERRAFORM_CLOUD_TOKEN }}
       ARM_CLIENT_ID: ${{ secrets.TF_API_CLIENT_ID }}
       ARM_TENANT_ID: ${{ secrets.TF_API_TENANT_ID }}
       ARM_USE_OIDC: true
