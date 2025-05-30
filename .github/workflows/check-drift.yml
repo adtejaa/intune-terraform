@@ -12,9 +12,9 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      TERRAFORM_CLOUD_TOKEN: ${{ secrets.TERRAFORM_CLOUD_TOKEN }}
-      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      TF_INTUNE_API_TOKEN: ${{ secrets.TF_INTUNE_API_TOKEN }}
+      TF_API_CLIENT_ID: ${{ secrets.TF_API_CLIENT_ID }}
+      TF_API_TENANT_ID: ${{ secrets.TF_API_TENANT_ID }}
       ARM_USE_OIDC: true
 
     steps:
