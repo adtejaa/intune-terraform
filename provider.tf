@@ -19,9 +19,8 @@ terraform {
   } 
 }
 
-# provider "microsoft365wp" {
-#   client_id     = "pleae provide client_id"
-#   client_secret = "please provide client_secret"
-#   tenant_id     = "tenant_id"
-#   use_oidc = true
-# }
+provider "microsoft365wp" {
+  client_id     = var.client_id
+  tenant_id     = var.tenant_id
+  use_oidc      = true
+}
