@@ -1,2 +1,7 @@
-variable "client_id" {}
-variable "tenant_id" {}
+variable "client_id" {
+  description = "Azure App Client ID"
+}
+
+variable "tenant_id" {
+  description = "Azure Tenant ID"
+}
