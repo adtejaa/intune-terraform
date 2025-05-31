@@ -22,6 +22,7 @@ terraform {
 provider "microsoft365wp" {
   client_id     = var.client_id
   tenant_id     = var.tenant_id
+  client_secret = var.client_secret
   use_oidc      = true
   use_cli       = false
 }
@@ -32,4 +33,8 @@ variable "client_id" {
 
 variable "tenant_id" {
   description = "Azure Tenant ID"
+}
+
+variable "client_secret" {
+  description = "Azure App Client Secret"
 }
