@@ -66,6 +66,39 @@ To use OIDC-based authentication from GitHub Actions:
 
 ## ⚙️ Terraform Configuration
 
+This repo manages Microsoft Intune and Entra ID using the [microsoft365wp](https://registry.terraform.io/providers/terraprovider/microsoft365wp/latest) provider and stores state in Terraform Cloud.
+
+---
+
+### 🧾 `provider.tf`
+
+#### ▶️ GitHub Actions (OIDC-based)
+
+```hcl
+terraform {
+  required_providers {
+    microsoft365wp = {
+      source  = "terraprovider/microsoft365wp"
+      version = "0.16.0"
+    }
+  }
+
+  cloud {
+    organization = "intune-adtejaa"
+
+    workspaces {
+      name = "intune-dev"
+    }
+  }
+}
+
+provider "microsoft365wp" {
+  client_id = var.client_id
+  tenant_id = var.tenant_id
+  use_oidc  = true
+}
+
+
 ## 🔐 Authentication & State Handling Explained
 
 This project supports two modes of authentication for managing Microsoft Intune and Entra ID via Terraform:
