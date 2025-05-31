@@ -18,14 +18,3 @@ provider "microsoft365wp" {
   use_cli       = false
 }
 
-variable "client_id" {
-  description = "Azure App Client ID"
-}
-
-variable "tenant_id" {
-  description = "Azure Tenant ID"
-}
-
-variable "client_secret" {
-  description = "Azure App Client Secret"
-}
