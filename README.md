@@ -66,13 +66,37 @@ To use OIDC-based authentication from GitHub Actions:
 
 ## ⚙️ Terraform Configuration
 
-This repo manages Microsoft Intune and Entra ID using the [microsoft365wp](https://registry.terraform.io/providers/terraprovider/microsoft365wp/latest) provider and stores state in Terraform Cloud.
+This repository uses the [`microsoft365wp`](https://registry.terraform.io/providers/terraprovider/microsoft365wp/latest) provider to manage Microsoft Intune and Entra ID resources. It uses **Terraform Cloud** to store and manage the remote state file, ensuring consistency between GitHub Actions and local executions.
 
 ---
 
-### 🧾 `provider.tf`
+### 📌 Why `client_id` and `tenant_id` Are Required (Even with OIDC)
 
-#### ▶️ GitHub Actions (OIDC-based)
+- Even when using **OIDC-based authentication** (i.e. no secrets), Terraform still needs to **know which Azure App Registration to use**.
+- `client_id`: Identifies the App Registration you created in Entra ID.
+- `tenant_id`: Tells Terraform which Microsoft Entra tenant (directory) to authenticate against.
+- `use_oidc = true`: Instructs Terraform to **request an identity token** from GitHub Actions and use that to authenticate against Azure.
+- ✅ No `client_secret` is needed in OIDC mode.
+
+---
+
+### ☁️ Why Terraform Cloud Is Used
+
+Terraform Cloud stores your `.tfstate` file remotely, enabling:
+
+- ✅ **Shared access** between users and GitHub Actions
+- ✅ **Drift detection**, **remote plan/apply**, and **state locking**
+- ✅ Better security: no local `.tfstate` with sensitive data like `resource_ids`
+
+Once configured, both **local CLI** and **GitHub workflows** interact with the same cloud state, avoiding duplication or drift.
+
+> 💡 If you're using `terraform login` locally, your actions are also recorded in Terraform Cloud UI just like GitHub CI/CD.
+
+---
+
+### 🔧 `provider.tf`
+
+#### ▶️ GitHub Actions (OIDC)
 
 ```hcl
 terraform {
@@ -90,6 +114,12 @@ terraform {
       name = "intune-dev"
     }
   }
+}
+
+provider "microsoft365wp" {
+  client_id = var.client_id
+  tenant_id = var.tenant_id
+  use_oidc  = true
 }
 
 provider "microsoft365wp" {
@@ -137,31 +167,5 @@ This project supports two modes of authentication for managing Microsoft Intune 
 - **Local Machine**:
   - Requires `client_id`, `tenant_id`, and `client_secret`
   - State is still stored in Terraform Cloud (after login)
-
----
-
-### 🔗 Example Plan Triggered via GitHub
-
-```yaml
-permissions:
-  id-token: write
-  contents: read
-
-env:
-  ARM_CLIENT_ID: ${{ secrets.TF_API_CLIENT_ID }}
-  ARM_TENANT_ID: ${{ secrets.TF_API_TENANT_ID }}
-  ARM_USE_OIDC: true
-  TERRAFORM_CLOUD_TOKEN: ${{ secrets.TERRAFORM_CLOUD_TOKEN }}
-
-
-### 🔹 Option A: Local (Client Secret)
-
-```hcl
-provider "microsoft365wp" {
-  client_id     = var.client_id
-  client_secret = var.client_secret
-  tenant_id     = var.tenant_id
-}
-
 
 
