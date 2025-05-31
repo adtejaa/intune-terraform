@@ -24,6 +24,7 @@ provider "microsoft365wp" {
   tenant_id     = var.tenant_id
   use_oidc      = true
   use_cli       = false
+  use_oidc_token   = true
 }
 
 variable "client_id" {
