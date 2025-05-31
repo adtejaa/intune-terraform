@@ -2,7 +2,7 @@ terraform {
   required_providers {
     microsoft365wp = {
       source = "terraprovider/microsoft365wp"
-      version = "0.16.0"
+      version = ">= 1.0.0"
     }
   }
 }
@@ -24,7 +24,6 @@ provider "microsoft365wp" {
   tenant_id     = var.tenant_id
   use_oidc      = true
   use_cli       = false
-  use_oidc_token   = true
 }
 
 variable "client_id" {
