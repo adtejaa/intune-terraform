@@ -66,6 +66,61 @@ To use OIDC-based authentication from GitHub Actions:
 
 ## ⚙️ Terraform Configuration
 
+## 🔐 Authentication & State Handling Explained
+
+This project supports two modes of authentication for managing Microsoft Intune and Entra ID via Terraform:
+
+---
+
+### 🔑 Required Credentials
+
+| Credential        | GitHub OIDC (CI/CD) | Local Execution | Purpose                                                                 |
+|------------------|---------------------|-----------------|-------------------------------------------------------------------------|
+| `client_id`      | ✅ Required         | ✅ Required     | Identifies the Azure App Registration (Service Principal)              |
+| `tenant_id`      | ✅ Required         | ✅ Required     | Specifies the Entra ID (Azure AD) tenant                               |
+| `client_secret`  | ❌ Not Needed       | ✅ Required     | Required only for local runs to authenticate                           |
+
+> 🔸 GitHub Actions uses **OIDC federation**, so you don't need to store `client_secret` in secrets.
+
+---
+
+### 📦 Terraform Cloud State
+
+| Use Case                      | `TERRAFORM_CLOUD_TOKEN` | Why is it Needed?                                                         |
+|------------------------------|--------------------------|---------------------------------------------------------------------------|
+| Using Terraform Cloud        | ✅ Required               | Authenticates and stores state in Terraform Cloud (`.tfstate` file)       |
+| Using Local State (Optional) | ❌ Not Required           | Uses `.tfstate` file on local filesystem                                  |
+
+> ℹ️ Running `terraform login` locally connects your machine to Terraform Cloud and syncs state centrally.
+
+---
+
+### 🤝 Summary
+
+- **GitHub Actions**:
+  - Uses `client_id` + `tenant_id`
+  - Uses OIDC via federated credentials
+  - No need to store or expose client secrets
+- **Local Machine**:
+  - Requires `client_id`, `tenant_id`, and `client_secret`
+  - State is still stored in Terraform Cloud (after login)
+
+---
+
+### 🔗 Example Plan Triggered via GitHub
+
+```yaml
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  ARM_CLIENT_ID: ${{ secrets.TF_API_CLIENT_ID }}
+  ARM_TENANT_ID: ${{ secrets.TF_API_TENANT_ID }}
+  ARM_USE_OIDC: true
+  TERRAFORM_CLOUD_TOKEN: ${{ secrets.TERRAFORM_CLOUD_TOKEN }}
+
+
 ### 🔹 Option A: Local (Client Secret)
 
 ```hcl
@@ -74,3 +129,6 @@ provider "microsoft365wp" {
   client_secret = var.client_secret
   tenant_id     = var.tenant_id
 }
+
+
+
