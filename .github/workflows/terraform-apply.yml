@@ -17,12 +17,23 @@ jobs:
     name: Apply Terraform Changes
     runs-on: ubuntu-latest
 
+    env:
+      TERRAFORM_CLOUD_TOKEN: ${{ secrets.TERRAFORM_CLOUD_TOKEN }}
+      ARM_CLIENT_ID: ${{ secrets.TF_API_CLIENT_ID }}
+      ARM_TENANT_ID: ${{ secrets.TF_API_TENANT_ID }}
+      ARM_USE_OIDC: true
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
+
+      - name: Write Terraform Cloud credentials
+        run: |
+          mkdir -p ~/.terraform.d
+          echo "{\"credentials\": {\"app.terraform.io\": {\"token\": \"${TERRAFORM_CLOUD_TOKEN}\"}}}" > ~/.terraform.d/credentials.tfrc.json
 
       - name: Terraform Init
         run: terraform init
@@ -35,9 +46,3 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
-
-    env:
-      TERRAFORM_CLOUD_TOKEN: ${{ secrets.TERRAFORM_CLOUD_TOKEN }}
-      ARM_CLIENT_ID: ${{ secrets.TF_API_CLIENT_ID }}
-      ARM_TENANT_ID: ${{ secrets.TF_API_TENANT_ID }}
-      ARM_USE_OIDC: true
