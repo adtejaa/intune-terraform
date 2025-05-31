@@ -8,16 +8,7 @@ terraform {
 }
 
 
-terraform { 
-  cloud { 
-    
-    organization = "intune-adtejaa" 
 
-    workspaces { 
-      name = "intune-dev" 
-    } 
-  } 
-}
 
 provider "microsoft365wp" {
  # client_id     = var.client_id
