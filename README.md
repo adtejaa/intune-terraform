@@ -66,9 +66,7 @@ To use OIDC-based authentication from GitHub Actions:
 
 ## ⚙️ Terraform Configuration
 
-### `main.tf`
-
-#### 🔹 Option A: Local (Client Secret)
+### 🔹 Option A: Local (Client Secret)
 
 ```hcl
 provider "microsoft365wp" {
