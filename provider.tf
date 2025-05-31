@@ -2,7 +2,7 @@ terraform {
   required_providers {
     microsoft365wp = {
       source = "terraprovider/microsoft365wp"
-      version = ">= 1.0.0"
+      version = "0.16.0"
     }
   }
 }
